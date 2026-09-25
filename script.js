@@ -120,6 +120,23 @@
     }
   }
 
+  // Envia a resposta para o Firebase (se estiver configurado).
+  // Assim a confirmação chega ao painel do organizador em qualquer aparelho.
+  function enviarRsvpNuvem(convidado, resposta) {
+    try {
+      var db = (typeof getFirestore === "function") ? getFirestore() : null;
+      if (!db) return; // sem Firebase: segue só com o localStorage
+      db.collection("presencas").doc(convidado.codigo).set({
+        codigo: convidado.codigo,
+        nome: convidado.nome,
+        resposta: resposta,
+        atualizadoEm: new Date().toISOString()
+      });
+    } catch (e) {
+      // Se falhar (sem internet, config errada), não quebra o convite.
+    }
+  }
+
   function configurarRsvp(convidado) {
     document.getElementById("ola-rsvp").textContent =
       "Confirmando para: " + convidado.nome;
@@ -132,6 +149,7 @@
         var resp = btn.getAttribute("data-resp");
         salvarRsvp(convidado.codigo, resp);
         atualizarStatusRsvp(resp);
+        enviarRsvpNuvem(convidado, resp);
       });
     });
   }

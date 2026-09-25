@@ -81,6 +81,7 @@
   <div class="wrap">
     <h1>🎀 Painel de Convites</h1>
     <p class="sub">Festa surpresa da Julia · 16 anos · 11 de outubro. Use esta página só você (não mande pra Julia!).</p>
+    <p class="sub" id="status-firebase" style="font-weight:600;"></p>
 
     <div class="cartao">
       <h2>1. Endereço base do site</h2>
@@ -113,6 +114,11 @@
       </table>
     </div>
   </div>
+
+  <!-- Firebase (para ler as confirmações ao vivo) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
 
   <script src="convidados.js"></script>
   <script>
@@ -192,12 +198,34 @@
       return url;
     }
 
+    // Respostas vindas do Firebase (nuvem), por código de convidado.
+    var respostasNuvem = {};
+
     function statusRsvp(codigo) {
-      var r = null;
-      try { r = localStorage.getItem("rsvp_" + codigo); } catch (e) {}
+      // Prioriza a resposta da nuvem; se não houver, usa a local.
+      var r = respostasNuvem[codigo];
+      if (!r) {
+        try { r = localStorage.getItem("rsvp_" + codigo); } catch (e) {}
+      }
       if (r === "sim") return '<span class="rsvp-tag rsvp-sim">Vai</span>';
       if (r === "nao") return '<span class="rsvp-tag rsvp-nao">Não vai</span>';
       return '<span class="rsvp-tag rsvp-pendente">Sem resposta</span>';
+    }
+
+    // Escuta as presenças no Firestore em tempo real (se configurado).
+    function ligarPainelAoVivo() {
+      var db = (typeof getFirestore === "function") ? getFirestore() : null;
+      if (!db) return; // sem Firebase: painel usa só o localStorage local
+      db.collection("presencas").onSnapshot(function (snap) {
+        respostasNuvem = {};
+        snap.forEach(function (doc) {
+          var d = doc.data();
+          respostasNuvem[doc.id] = d.resposta;
+        });
+        render();
+      }, function (err) {
+        console.warn("Não foi possível ler as presenças:", err);
+      });
     }
 
     function render() {
@@ -279,6 +307,20 @@
     });
 
     render();
+    ligarPainelAoVivo();
+
+    // Mostra se o painel ao vivo está ativo
+    (function () {
+      var aviso = document.getElementById("status-firebase");
+      if (!aviso) return;
+      if (typeof firebaseConfigurado === "function" && firebaseConfigurado()) {
+        aviso.textContent = "🟢 Painel ao vivo ativo — as confirmações aparecem aqui automaticamente.";
+        aviso.style.color = "#1a7a45";
+      } else {
+        aviso.textContent = "⚪ Painel ao vivo desligado — preencha o firebase-config.js para ativar (veja o LEIA-ME).";
+        aviso.style.color = "#b06";
+      }
+    })();
   </script>
 </body>
 </html>

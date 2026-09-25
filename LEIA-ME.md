@@ -77,7 +77,63 @@ Se clicar em **"Sim, vou!"**, aparecem automaticamente as instruções:
 
 ⚠️ **Importante entender:** essa resposta fica salva **no celular do próprio convidado**, não vem automaticamente para você. Para essa base simples (sem servidor), o jeito prático é o convidado te avisar, ou você perguntar. 
 
-Se você quiser que as confirmações cheguem **de verdade até você** (um painel real mostrando "fulano confirmou"), dá para evoluir o projeto usando um serviço como o **Firebase** ou um formulário (Google Forms / Formspree). É só pedir que eu monto essa parte.
+**Agora existe um painel ao vivo de verdade** usando o Firebase. Veja a seção abaixo para ativá-lo.
+
+---
+
+## 🔥 Painel de presenças ao vivo (Firebase)
+
+Com isto ligado, quando um convidado confirma no celular dele, a resposta aparece
+**automaticamente no seu painel** (`admin.html`), em qualquer aparelho. É gratuito.
+
+Você faz isto **uma vez**. Depois é só usar.
+
+### Passo 1 — Criar o projeto no Firebase
+1. Acesse https://console.firebase.google.com e entre com sua conta Google.
+2. Clique em **"Adicionar projeto"** (ou "Create a project").
+3. Dê um nome qualquer (ex.: `festa-julia`). Pode pular o Google Analytics.
+4. Espere criar e clique em **Continuar**.
+
+### Passo 2 — Criar o banco (Firestore)
+1. No menu à esquerda, vá em **Build → Firestore Database**.
+2. Clique em **Criar banco de dados**.
+3. Escolha **"Iniciar em modo de teste"** (test mode) e confirme.
+   - Modo de teste libera leitura/escrita por ~30 dias. Suficiente para a festa.
+   - (Se preferir deixar aberto além disso, dá para ajustar as regras depois.)
+4. Escolha a região mais próxima (ex.: `southamerica-east1`) e ative.
+
+### Passo 3 — Pegar a configuração (a "chave")
+1. Clique na engrenagem ⚙️ (ao lado de "Visão geral do projeto") → **Configurações do projeto**.
+2. Role até **"Seus aplicativos"** e clique no ícone **`</>`** (app da Web).
+3. Dê um apelido (ex.: `convite`) e clique em **Registrar app**.
+4. O Firebase mostra um bloco parecido com este:
+   ```js
+   const firebaseConfig = {
+     apiKey: "AIza........",
+     authDomain: "festa-julia.firebaseapp.com",
+     projectId: "festa-julia",
+     storageBucket: "festa-julia.appspot.com",
+     messagingSenderId: "123456789",
+     appId: "1:123...:web:abc..."
+   };
+   ```
+
+### Passo 4 — Colar no arquivo `firebase-config.js`
+1. Abra o arquivo **`firebase-config.js`** aqui no projeto.
+2. Substitua os valores `"COLE_AQUI..."` pelos valores que o Firebase te deu.
+3. Salve.
+
+### Passo 5 — Subir de novo pro GitHub
+Faça upload do `firebase-config.js` (e dos outros arquivos alterados) para o
+repositório, como você já fez antes. Pronto.
+
+### Como saber se funcionou
+- Abra o **`admin.html`**. No topo deve aparecer **"🟢 Painel ao vivo ativo"**.
+- Peça pra alguém (ou você mesmo, de outro celular) abrir um convite e clicar em
+  **"Sim, vou!"**. Em segundos, a linha da pessoa no painel muda para **"Vai"**.
+
+> Se aparecer "⚪ Painel ao vivo desligado", é porque o `firebase-config.js`
+> ainda está com os valores `COLE_AQUI`. Refaça o Passo 4.
 
 ---
 
