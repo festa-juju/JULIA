@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Título neutro de propósito, pra não entregar a surpresa -->
+  <title>Você recebeu um convite</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="fundo-particulas" id="particulas"></div>
+
+  <main class="cartao" id="cartao">
+    <!-- Tela 1: código inválido -->
+    <section class="tela" id="tela-invalido" hidden>
+      <div class="emoji-grande">🔒</div>
+      <h1>Convite não encontrado</h1>
+      <p>Este link parece estar incompleto ou incorreto.</p>
+      <p class="sub">Confira se você abriu o link exatamente como recebeu.</p>
+    </section>
+
+    <!-- Tela 2: abertura (antes de revelar) -->
+    <section class="tela" id="tela-abertura" hidden>
+      <div class="emoji-grande flutua">💌</div>
+      <h1>Você recebeu um convite secreto...</h1>
+      <p id="ola-convidado" class="ola"></p>
+      <button class="botao" id="btn-abrir">Abrir convite</button>
+      <p class="sub segredo">🤫 Psiu... é surpresa!</p>
+    </section>
+
+    <!-- Tela 3: o convite em si -->
+    <section class="tela convite" id="tela-convite" hidden>
+      <div class="selo">FESTA SURPRESA</div>
+      <div class="emoji-grande">🎀</div>
+      <p class="convite-linha">Você está convidado(a) para a festa surpresa de</p>
+      <h1 class="nome-aniversariante" id="nome-aniversariante">Julia</h1>
+      <div class="idade" id="idade">16 anos</div>
+
+      <div class="detalhes">
+        <div class="detalhe"><span>📅 Data</span><strong id="data"></strong></div>
+        <div class="detalhe"><span>🕖 Horário</span><strong id="horario"></strong></div>
+        <div class="detalhe"><span>📍 Local</span><strong id="local"></strong></div>
+      </div>
+
+      <div class="aviso-segredo" id="aviso-segredo"></div>
+
+      <!-- RSVP -->
+      <div class="rsvp" id="rsvp">
+        <h2>Você vai comparecer?</h2>
+        <p class="ola-rsvp" id="ola-rsvp"></p>
+        <div class="rsvp-botoes">
+          <button class="botao sim" data-resp="sim">Sim, vou! 🎉</button>
+          <button class="botao nao" data-resp="nao">Não vou poder 😢</button>
+        </div>
+        <p class="rsvp-status" id="rsvp-status"></p>
+
+        <!-- Instruções que só aparecem quando a pessoa confirma presença -->
+        <div class="instrucoes" id="instrucoes" hidden>
+          <h3>O que levar</h3>
+          <ul id="lista-instrucoes"></ul>
+          <a class="botao mapa" id="btn-mapa" href="#" target="_blank" rel="noopener">📍 Ver localização no mapa</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="rodape">Feito com 💗 para a Julia</footer>
+
+  <script src="convidados.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
