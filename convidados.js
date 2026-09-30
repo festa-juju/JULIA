@@ -32,8 +32,8 @@ const CONVIDADOS = [
 const FESTA = {
   aniversariante: "Julia",
   idade: 16,
-  data: "11 de outubro de 2026",
-  diaSemana: "domingo",
+  data: "12 de outubro de 2026",
+  diaSemana: "segunda-feira",
   horario: "Depois da igreja (12h)",
   local: "Housing Alphaville Flamboyant — Casa 278",
   observacao: "É SEGREDO! Não conte pra Julia 🤫",
