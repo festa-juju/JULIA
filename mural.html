@@ -8,9 +8,7 @@
   <style>
     .mural-wrap { position: relative; z-index: 1; max-width: 760px; width: 100%; margin: 0 auto; }
     .mural-topo { text-align: center; margin-bottom: 20px; }
-    .mural-topo h1 {
-      color: var(--rosa-escuro); font-size: 2rem; line-height: 1.2;
-    }
+    .mural-topo h1 { color: var(--rosa-escuro); font-size: 2rem; line-height: 1.2; }
     .mural-topo p { opacity: 0.85; }
     .contador {
       display: inline-block; background: #fff0f7; color: var(--rosa-escuro);
@@ -22,30 +20,81 @@
       border: 3px solid #ffd6e9;
       border-radius: 24px;
       box-shadow: var(--sombra);
-      padding: 22px;
+      padding: 20px;
       min-height: 220px;
     }
-    .grade-cartinhas {
+
+    /* Grade de envelopes FECHADOS (compacto, bom pro celular) */
+    .grade-envelopes {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 14px;
     }
-    .cartinha {
-      background: linear-gradient(160deg, #ffffff, #fff0f7);
-      border: 1px solid #ffd0e6;
-      border-radius: 16px;
-      padding: 16px;
-      box-shadow: 0 6px 16px rgba(214, 51, 132, 0.14);
+    .envelope {
+      background: linear-gradient(160deg, #ffffff, #ffe6f2);
+      border: 1px solid #ffcfe4;
+      border-radius: 14px;
+      padding: 14px 8px;
+      box-shadow: 0 6px 14px rgba(214, 51, 132, 0.14);
+      cursor: pointer;
+      text-align: center;
       transform: rotate(var(--giro, 0deg));
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .envelope:hover, .envelope:active {
+      transform: rotate(0deg) translateY(-3px) scale(1.03);
+      box-shadow: 0 10px 22px rgba(214, 51, 132, 0.22);
+    }
+    .envelope .icone { font-size: 2rem; line-height: 1; }
+    .envelope .de {
+      margin-top: 6px; font-size: 0.82rem; font-weight: 700;
+      color: var(--rosa-escuro); word-break: break-word;
+    }
+    .vazio { text-align: center; opacity: 0.7; padding: 30px; font-size: 1.05rem; }
+
+    /* Modal: a cartinha aberta */
+    .overlay {
+      position: fixed; inset: 0; z-index: 50;
+      background: rgba(90, 42, 68, 0.55);
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px; opacity: 0; pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+    .overlay.ativo { opacity: 1; pointer-events: auto; }
+    .carta-aberta {
+      background: var(--branco);
+      border: 3px solid #ffd6e9;
+      border-radius: 22px;
+      box-shadow: 0 24px 60px rgba(214, 51, 132, 0.35);
+      max-width: 420px; width: 100%;
+      max-height: 85vh; overflow-y: auto;
+      padding: 26px 22px;
+      transform: scale(0.9);
       transition: transform 0.2s ease;
       text-align: left;
-      animation: aparece 0.5s ease;
     }
-    .cartinha:hover { transform: rotate(0deg) translateY(-4px) scale(1.02); }
-    .cartinha .selo-env { font-size: 1.6rem; }
-    .cartinha .texto { margin: 10px 0; font-size: 1rem; line-height: 1.45; white-space: pre-wrap; word-break: break-word; }
-    .cartinha .de { font-size: 0.85rem; color: var(--rosa-escuro); font-weight: 700; text-align: right; }
-    .vazio { text-align: center; opacity: 0.7; padding: 30px; font-size: 1.05rem; }
+    .overlay.ativo .carta-aberta { transform: scale(1); }
+    .carta-aberta .icone-top { font-size: 2.4rem; text-align: center; }
+    .carta-aberta .de-top {
+      text-align: center; color: var(--rosa-escuro); font-weight: 700;
+      font-size: 1.1rem; margin: 6px 0 14px;
+    }
+    .carta-aberta .texto-full {
+      font-size: 1.05rem; line-height: 1.5; white-space: pre-wrap; word-break: break-word;
+      border-top: 1px dashed #ffdcec; padding-top: 14px;
+    }
+    .fechar {
+      display: block; margin: 18px auto 0;
+      background: linear-gradient(135deg, var(--rosa-forte), var(--rosa-escuro));
+      color: #fff; border: none; padding: 12px 28px; border-radius: 999px;
+      font-weight: 700; font-size: 1rem; cursor: pointer;
+    }
+
+    @media (max-width: 480px) {
+      .grade-envelopes { grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 12px; }
+      .mural-topo h1 { font-size: 1.6rem; }
+    }
   </style>
 </head>
 <body>
@@ -55,15 +104,25 @@
     <div class="mural-topo">
       <div class="emoji-grande">💌</div>
       <h1>Cartinhas para a Julia</h1>
-      <p>Recados de carinho de quem te ama 💗</p>
+      <p>Toque em um envelope para abrir e ler 💗</p>
       <div class="contador" id="contador">0 cartinhas</div>
     </div>
 
     <section class="casa">
-      <div class="grade-cartinhas" id="grade"></div>
+      <div class="grade-envelopes" id="grade"></div>
       <p class="vazio" id="vazio">As cartinhas vão aparecer aqui ✨</p>
     </section>
   </main>
+
+  <!-- Modal da cartinha aberta -->
+  <div class="overlay" id="overlay">
+    <div class="carta-aberta" role="dialog" aria-modal="true">
+      <div class="icone-top">💌</div>
+      <div class="de-top" id="modal-de"></div>
+      <div class="texto-full" id="modal-texto"></div>
+      <button class="fechar" id="btn-fechar">Fechar</button>
+    </div>
+  </div>
 
   <footer class="rodape">Feliz aniversário, Julia! 🎂💗</footer>
 
@@ -94,27 +153,46 @@
       return div.innerHTML;
     }
 
+    // ---- Modal ----
+    var overlay = document.getElementById("overlay");
+    function abrirCarta(nome, texto) {
+      document.getElementById("modal-de").textContent = "De: " + (nome || "Anônimo");
+      document.getElementById("modal-texto").textContent = texto || "";
+      overlay.classList.add("ativo");
+    }
+    function fecharCarta() { overlay.classList.remove("ativo"); }
+
+    document.getElementById("btn-fechar").addEventListener("click", fecharCarta);
+    overlay.addEventListener("click", function (e) {
+      // fecha se clicar fora da carta (no fundo escuro)
+      if (e.target === overlay) fecharCarta();
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") fecharCarta();
+    });
+
     function render(lista) {
       var grade = document.getElementById("grade");
       var vazio = document.getElementById("vazio");
       var contador = document.getElementById("contador");
       grade.innerHTML = "";
 
-      contador.textContent = (lista.length === 1)
-        ? "1 cartinha" : (lista.length + " cartinhas");
+      contador.textContent = (lista.length === 1) ? "1 cartinha" : (lista.length + " cartinhas");
 
       if (!lista.length) { vazio.hidden = false; return; }
       vazio.hidden = true;
 
       lista.forEach(function (c) {
         var div = document.createElement("div");
-        div.className = "cartinha";
+        div.className = "envelope";
         var giro = (Math.random() * 6 - 3).toFixed(1);
         div.style.setProperty("--giro", giro + "deg");
         div.innerHTML =
-          '<div class="selo-env">💌</div>' +
-          '<div class="texto">' + escaparHtml(c.texto || "") + "</div>" +
-          '<div class="de">— ' + escaparHtml(c.nome || "Anônimo") + "</div>";
+          '<div class="icone">✉️</div>' +
+          '<div class="de">' + escaparHtml(c.nome || "Anônimo") + "</div>";
+        div.addEventListener("click", function () {
+          abrirCarta(c.nome, c.texto);
+        });
         grade.appendChild(div);
       });
     }
@@ -123,7 +201,6 @@
       criarCoracoes();
       var db = (typeof getFirestore === "function") ? getFirestore() : null;
       if (!db) {
-        // Sem Firebase: tenta mostrar o que estiver salvo localmente
         var arr = [];
         try { arr = JSON.parse(localStorage.getItem("cartinhas_local")) || []; } catch (e) {}
         render(arr);
