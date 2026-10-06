@@ -113,6 +113,30 @@
         <tbody id="tabela"></tbody>
       </table>
     </div>
+
+    <div class="cartao">
+      <h2>3. Cartinhas para a Julia</h2>
+      <p class="aviso">
+        As cartinhas que os convidados escrevem aparecem aqui. Você pode
+        <strong>remover</strong> qualquer uma (ex.: brincadeira, erro). A página
+        bonita que a Julia abre no dia é o <strong>mural</strong>.
+      </p>
+      <div class="acoes" style="margin:12px 0;">
+        <a class="botao sec" id="btn-abrir-mural" href="mural.html" target="_blank" rel="noopener">🏠 Abrir o mural (para a Julia)</a>
+        <button class="sec" id="btn-copiar-mural">Copiar link do mural</button>
+      </div>
+      <p class="aviso" id="cartinhas-vazio">Nenhuma cartinha ainda.</p>
+      <table id="tabela-cartinhas-wrap" hidden>
+        <thead>
+          <tr>
+            <th>De</th>
+            <th>Mensagem</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="tabela-cartinhas"></tbody>
+      </table>
+    </div>
   </div>
 
   <!-- Firebase (para ler as confirmações ao vivo) -->
@@ -306,8 +330,85 @@
       });
     });
 
+    // ---- Cartinhas: listar e remover ----
+    function escaparHtmlAdmin(txt) {
+      var d = document.createElement("div");
+      d.textContent = txt;
+      return d.innerHTML;
+    }
+
+    function renderCartinhas(lista) {
+      var tbody = document.getElementById("tabela-cartinhas");
+      var tabela = document.getElementById("tabela-cartinhas-wrap");
+      var vazio = document.getElementById("cartinhas-vazio");
+      tbody.innerHTML = "";
+
+      if (!lista.length) {
+        tabela.hidden = true;
+        vazio.hidden = false;
+        return;
+      }
+      tabela.hidden = false;
+      vazio.hidden = true;
+
+      lista.forEach(function (c) {
+        var tr = document.createElement("tr");
+
+        var tdDe = document.createElement("td");
+        tdDe.innerHTML = "<strong>" + escaparHtmlAdmin(c.nome || "Anônimo") + "</strong>";
+
+        var tdMsg = document.createElement("td");
+        tdMsg.innerHTML = escaparHtmlAdmin(c.texto || "");
+        tdMsg.style.fontSize = "0.88rem";
+
+        var tdAcao = document.createElement("td");
+        var btnRem = document.createElement("button");
+        btnRem.className = "btn-remover";
+        btnRem.textContent = "Remover";
+        btnRem.addEventListener("click", function () {
+          if (!confirm('Remover a cartinha de "' + (c.nome || "Anônimo") + '"?')) return;
+          var db = (typeof getFirestore === "function") ? getFirestore() : null;
+          if (db && c._id) {
+            db.collection("cartinhas").doc(c._id).delete();
+          }
+        });
+        tdAcao.appendChild(btnRem);
+
+        tr.appendChild(tdDe);
+        tr.appendChild(tdMsg);
+        tr.appendChild(tdAcao);
+        tbody.appendChild(tr);
+      });
+    }
+
+    function ligarCartinhas() {
+      var db = (typeof getFirestore === "function") ? getFirestore() : null;
+      if (!db) { renderCartinhas([]); return; }
+      db.collection("cartinhas").orderBy("criadoEm", "asc").onSnapshot(function (snap) {
+        var lista = [];
+        snap.forEach(function (doc) {
+          var d = doc.data();
+          d._id = doc.id;
+          lista.push(d);
+        });
+        renderCartinhas(lista);
+      }, function (err) {
+        console.warn("Não foi possível ler as cartinhas:", err);
+      });
+    }
+
+    // Botão copiar link do mural
+    document.getElementById("btn-copiar-mural").addEventListener("click", function () {
+      var base = window.location.href.split("?")[0].replace(/admin\.html$/, "");
+      var link = base + "mural.html";
+      navigator.clipboard.writeText(link).then(function () {
+        alert("Link do mural copiado! É esta a página que a Julia abre no dia:\n\n" + link);
+      });
+    });
+
     render();
     ligarPainelAoVivo();
+    ligarCartinhas();
 
     // Mostra se o painel ao vivo está ativo
     (function () {

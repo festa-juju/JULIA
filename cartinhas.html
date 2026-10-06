@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cartinhas para a aniversariante 💌</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .cartinhas-wrap {
+      position: relative; z-index: 1;
+      max-width: 640px; width: 100%; margin: 0 auto;
+    }
+    .cartinhas-topo { text-align: center; margin-bottom: 18px; }
+    .cartinhas-topo h1 { color: var(--rosa-escuro); font-size: 1.6rem; }
+    .cartinhas-topo p { opacity: 0.85; }
+
+    .form-cartinha {
+      background: var(--branco);
+      border: 3px solid #ffd6e9;
+      border-radius: 22px;
+      box-shadow: var(--sombra);
+      padding: 22px;
+      margin-bottom: 26px;
+    }
+    .form-cartinha label { display: block; text-align: left; font-size: 0.9rem; margin: 10px 0 6px; opacity: 0.85; }
+    .form-cartinha input, .form-cartinha textarea {
+      width: 100%; padding: 12px 14px;
+      border: 1px solid #ffcfe4; border-radius: 12px;
+      font-size: 1rem; font-family: inherit; resize: vertical;
+    }
+    .form-cartinha textarea { min-height: 110px; }
+    .form-msg { margin-top: 12px; font-weight: 700; color: var(--rosa-forte); min-height: 1.2em; text-align: center; }
+
+    .voltar { display: inline-block; margin-top: 18px; }
+  </style>
+</head>
+<body>
+  <div class="fundo-particulas" id="particulas"></div>
+
+  <main class="cartinhas-wrap">
+    <div class="cartinhas-topo">
+      <div class="emoji-grande">💌</div>
+      <h1>Deixe uma cartinha</h1>
+      <p id="sub-topo">Escreva um recado para a Julia. Ela vai ler tudo no dia da festa!</p>
+    </div>
+
+    <form class="form-cartinha" id="form-cartinha">
+      <label for="de">Seu nome</label>
+      <input type="text" id="de" placeholder="Quem está escrevendo?" maxlength="40" required />
+
+      <label for="texto">Sua mensagem para a Julia</label>
+      <textarea id="texto" placeholder="Escreva aqui seu recado carinhoso..." maxlength="500" required></textarea>
+
+      <button type="submit" class="botao" id="btn-enviar">Enviar minha cartinha 💗</button>
+      <p class="form-msg" id="form-msg"></p>
+    </form>
+
+    <p class="sub" style="text-align:center;">
+      Sua cartinha fica guardada em segredo e será revelada para a Julia no dia da festa 🤫💗
+    </p>
+
+    <div style="text-align:center;">
+      <a class="botao sec voltar" id="btn-voltar" href="#">← Voltar ao convite</a>
+    </div>
+  </main>
+
+  <footer class="rodape">Feito com 💗</footer>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="cartinhas.js"></script>
+</body>
+</html>

@@ -11,9 +11,22 @@ Assim, ninguém vê a lista completa e fica mais fácil manter o segredo.
 | `style.css`      | O visual (tema rosa, animações)                                       |
 | `script.js`      | A lógica do convite (lê o link, personaliza, salva presença)          |
 | `convidados.js`  | A lista de convidados e os dados da festa — **edite este arquivo**    |
-| `admin.html`     | Seu painel: gera os links e mostra quem confirmou (**só para você**)  |
+| `admin.html`     | Seu painel: links, presenças e cartinhas (**só para você**)           |
+| `firebase-config.js` | A chave do Firebase (painel ao vivo + cartinhas)                  |
+| `cartinhas.html` | Página onde o convidado **escreve** uma cartinha (só escreve)         |
+| `cartinhas.js`   | A lógica de enviar a cartinha                                         |
+| `mural.html`     | O **mural** com todas as cartinhas — é o que a **Julia abre no dia**  |
 
 > ⚠️ **Nunca mande `convidados.js` nem `admin.html` para a Julia.** Eles têm a lista completa.
+
+### 💌 Como funcionam as cartinhas (3 partes, igual ao convite)
+1. **Escrever** — depois de confirmar presença, o convidado clica em "Escrever uma
+   cartinha" e manda um recado. Ele **não vê** as cartinhas das outras pessoas.
+2. **Controlar** — no seu painel (`admin.html`, seção 3) você vê todas as cartinhas
+   e pode **remover** qualquer uma.
+3. **Mural** — a página `mural.html` mostra todas as cartinhas num quadro bonito.
+   É o link que você entrega para a **Julia abrir no dia da festa**. Para pegar esse
+   link, use o botão "Copiar link do mural" no painel.
 
 ---
 

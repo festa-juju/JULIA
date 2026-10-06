@@ -96,6 +96,17 @@
       ul.appendChild(li);
     });
 
+    // Aviso de horário de chegada (surpresa)
+    var avisoChegada = document.getElementById("aviso-chegada");
+    if (avisoChegada) {
+      if (FESTA.avisoChegada) {
+        avisoChegada.textContent = FESTA.avisoChegada;
+        avisoChegada.hidden = false;
+      } else {
+        avisoChegada.hidden = true;
+      }
+    }
+
     // Link da localização
     var mapa = document.getElementById("btn-mapa");
     if (FESTA.linkLocalizacao) {
@@ -172,6 +183,14 @@
 
     preencherFesta();
     configurarRsvp(convidado);
+
+    // Monta o link do botão "Escrever uma cartinha" levando o nome/código da pessoa
+    var btnCartinha = document.getElementById("btn-cartinha");
+    if (btnCartinha) {
+      var urlCartinha = "cartinhas.html?c=" + encodeURIComponent(convidado.codigo);
+      if (convidado.nome) urlCartinha += "&n=" + encodeURIComponent(convidado.nome);
+      btnCartinha.href = urlCartinha;
+    }
 
     mostrarTela("tela-abertura");
 

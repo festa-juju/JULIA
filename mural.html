@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cartinhas para a Julia 💗</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .mural-wrap { position: relative; z-index: 1; max-width: 760px; width: 100%; margin: 0 auto; }
+    .mural-topo { text-align: center; margin-bottom: 20px; }
+    .mural-topo h1 {
+      color: var(--rosa-escuro); font-size: 2rem; line-height: 1.2;
+    }
+    .mural-topo p { opacity: 0.85; }
+    .contador {
+      display: inline-block; background: #fff0f7; color: var(--rosa-escuro);
+      font-weight: 700; padding: 4px 16px; border-radius: 999px; margin-top: 8px;
+    }
+
+    .casa {
+      background: #fff5fa;
+      border: 3px solid #ffd6e9;
+      border-radius: 24px;
+      box-shadow: var(--sombra);
+      padding: 22px;
+      min-height: 220px;
+    }
+    .grade-cartinhas {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 16px;
+    }
+    .cartinha {
+      background: linear-gradient(160deg, #ffffff, #fff0f7);
+      border: 1px solid #ffd0e6;
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 6px 16px rgba(214, 51, 132, 0.14);
+      transform: rotate(var(--giro, 0deg));
+      transition: transform 0.2s ease;
+      text-align: left;
+      animation: aparece 0.5s ease;
+    }
+    .cartinha:hover { transform: rotate(0deg) translateY(-4px) scale(1.02); }
+    .cartinha .selo-env { font-size: 1.6rem; }
+    .cartinha .texto { margin: 10px 0; font-size: 1rem; line-height: 1.45; white-space: pre-wrap; word-break: break-word; }
+    .cartinha .de { font-size: 0.85rem; color: var(--rosa-escuro); font-weight: 700; text-align: right; }
+    .vazio { text-align: center; opacity: 0.7; padding: 30px; font-size: 1.05rem; }
+  </style>
+</head>
+<body>
+  <div class="fundo-particulas" id="particulas"></div>
+
+  <main class="mural-wrap">
+    <div class="mural-topo">
+      <div class="emoji-grande">💌</div>
+      <h1>Cartinhas para a Julia</h1>
+      <p>Recados de carinho de quem te ama 💗</p>
+      <div class="contador" id="contador">0 cartinhas</div>
+    </div>
+
+    <section class="casa">
+      <div class="grade-cartinhas" id="grade"></div>
+      <p class="vazio" id="vazio">As cartinhas vão aparecer aqui ✨</p>
+    </section>
+  </main>
+
+  <footer class="rodape">Feliz aniversário, Julia! 🎂💗</footer>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script>
+    function criarCoracoes() {
+      var container = document.getElementById("particulas");
+      if (!container) return;
+      var emojis = ["💗", "💕", "🎀", "💖", "🌸", "💌"];
+      for (var i = 0; i < 22; i++) {
+        var c = document.createElement("span");
+        c.className = "coracao";
+        c.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        c.style.left = Math.random() * 100 + "vw";
+        c.style.animationDuration = 6 + Math.random() * 8 + "s";
+        c.style.animationDelay = Math.random() * 8 + "s";
+        c.style.fontSize = 16 + Math.random() * 18 + "px";
+        container.appendChild(c);
+      }
+    }
+
+    function escaparHtml(txt) {
+      var div = document.createElement("div");
+      div.textContent = txt;
+      return div.innerHTML;
+    }
+
+    function render(lista) {
+      var grade = document.getElementById("grade");
+      var vazio = document.getElementById("vazio");
+      var contador = document.getElementById("contador");
+      grade.innerHTML = "";
+
+      contador.textContent = (lista.length === 1)
+        ? "1 cartinha" : (lista.length + " cartinhas");
+
+      if (!lista.length) { vazio.hidden = false; return; }
+      vazio.hidden = true;
+
+      lista.forEach(function (c) {
+        var div = document.createElement("div");
+        div.className = "cartinha";
+        var giro = (Math.random() * 6 - 3).toFixed(1);
+        div.style.setProperty("--giro", giro + "deg");
+        div.innerHTML =
+          '<div class="selo-env">💌</div>' +
+          '<div class="texto">' + escaparHtml(c.texto || "") + "</div>" +
+          '<div class="de">— ' + escaparHtml(c.nome || "Anônimo") + "</div>";
+        grade.appendChild(div);
+      });
+    }
+
+    function init() {
+      criarCoracoes();
+      var db = (typeof getFirestore === "function") ? getFirestore() : null;
+      if (!db) {
+        // Sem Firebase: tenta mostrar o que estiver salvo localmente
+        var arr = [];
+        try { arr = JSON.parse(localStorage.getItem("cartinhas_local")) || []; } catch (e) {}
+        render(arr);
+        return;
+      }
+      db.collection("cartinhas").orderBy("criadoEm", "asc").onSnapshot(function (snap) {
+        var lista = [];
+        snap.forEach(function (doc) { lista.push(doc.data()); });
+        render(lista);
+      }, function (err) {
+        console.warn("Não foi possível carregar as cartinhas:", err);
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", init);
+  </script>
+</body>
+</html>

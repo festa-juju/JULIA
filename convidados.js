@@ -33,8 +33,8 @@ const FESTA = {
   aniversariante: "Julia",
   idade: 16,
   data: "12 de outubro de 2026",
-  diaSemana: "segunda-feira",
-  horario: "Depois da igreja (12h)",
+  diaSemana: "Segunda-feira",
+  horario: "12:00",
   local: "Housing Alphaville Flamboyant — Casa 278",
   observacao: "É SEGREDO! Não conte pra Julia 🤫",
 
@@ -43,6 +43,9 @@ const FESTA = {
     "👙 Levar roupa de banho",
     "🥩 Kit crente: 300g de carne e 1 bebida"
   ],
+  // Aviso de horário de chegada (aparece só para quem confirma presença).
+  // Troque o horário em "HORARIO_MAXIMO" pelo horário real.
+  avisoChegada: "⚠️ É surpresa! A Julia não vai estar em casa para que quando ela chegue ela fique surpresa. Cheguem no máximo às HORARIO_MAXIMO para todo mundo já estar lá quando ela chegar.",
   // Link do Google Maps para o local da festa.
   linkLocalizacao: "https://www.google.com/maps/search/?api=1&query=Housing+Alphaville+Flamboyant+Goi%C3%A2nia"
 };

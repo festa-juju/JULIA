@@ -197,12 +197,39 @@ p { margin: 8px 0; font-size: 1.05rem; }
   font-size: 0.98rem;
 }
 .instrucoes li:last-child { border-bottom: none; }
+.aviso-chegada {
+  background: #fff4d6;
+  border: 2px solid #f3c623;
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  font-weight: 600;
+  color: #8a6d00;
+  font-size: 0.95rem;
+  text-align: center;
+  line-height: 1.4;
+}
 .botao.mapa {
   display: block;
   margin: 0 auto;
   text-decoration: none;
   text-align: center;
   width: 100%;
+}
+.botao.cartinha-link {
+  display: block;
+  margin: 10px auto 0;
+  text-decoration: none;
+  text-align: center;
+  width: 100%;
+  background: linear-gradient(135deg, #b06ab3, #8e44ad);
+  box-shadow: 0 8px 20px rgba(142, 68, 173, 0.35);
+}
+.botao.sec {
+  background: #fff0f7;
+  color: var(--rosa-escuro);
+  border: 2px solid var(--rosa);
+  box-shadow: none;
 }
 
 .rodape { position: relative; z-index: 1; margin-top: 22px; font-size: 0.85rem; opacity: 0.7; }
