@@ -45,7 +45,7 @@ const FESTA = {
   ],
   // Aviso de horário de chegada (aparece só para quem confirma presença).
   // Troque o horário em "HORARIO_MAXIMO" pelo horário real.
-  avisoChegada: "⚠️ É surpresa! A Julia não vai estar em casa para que quando ela chegue ela fique surpresa. Cheguem no máximo às 12:30 para todo mundo já estar lá quando ela chegar. Qualquer duvida perguntar para o George.",
+  avisoChegada: "⚠️ É surpresa! A Julia não vai estar em casa para que quando ela chegue ela fique surpresa. Cheguem no máximo às 12:30 para todo mundo já estar lá quando ela chegar. Qualquer duvida pergunte para o George.",
   // Link do Google Maps para o local da festa.
   linkLocalizacao: "https://www.google.com/maps/search/?api=1&query=Housing+Alphaville+Flamboyant+Goi%C3%A2nia"
 };
